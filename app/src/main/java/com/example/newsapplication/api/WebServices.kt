@@ -12,7 +12,7 @@ interface WebServices {
     fun getNewsSources(@Query("apiKey") key:String,
                        @Query("language") language:String,
                        @Query("country") country:String):Call<SourcesResponse>
-    @GET("everything?")
+    @GET("everything")
     fun getNews(@Query("apiKey") key:String,
                        @Query("language") language:String,
                 @Query("sources") sources:String):Call<NewsResponse>
