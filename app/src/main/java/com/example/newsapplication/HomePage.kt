@@ -18,11 +18,15 @@ import retrofit2.Response
 
 class HomePage :BaseActivity(),TabLayout.OnTabSelectedListener {
     lateinit var binding: ActivityHomePageBinding
+    lateinit var adapter: NewsAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityHomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        adapter=NewsAdapter(null)
+        binding.recyclerView.adapter=adapter
         getSources()
+
     }
 
     private fun getSources() {
@@ -110,6 +114,6 @@ class HomePage :BaseActivity(),TabLayout.OnTabSelectedListener {
     }
 
     private fun showNewsInRecycleView(newsList: List<ArticlesItem?>?) {
-        TODO("Not yet implemented")
+        adapter.changeData(newsList)
     }
 }
