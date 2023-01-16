@@ -70,26 +70,32 @@ class HomePage :BaseActivity(),TabLayout.OnTabSelectedListener {
             binding.tabLayout.addTab(tab)
         }
         binding.tabLayout.addOnTabSelectedListener(this)
+        binding.tabLayout.getTabAt(0)?.select()
     }
     override fun onTabSelected(tab: TabLayout.Tab?) {
         val item = tab?.tag as SourcesItem
         getNews(item.id)
     }
     override fun onTabUnselected(tab: TabLayout.Tab?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onTabReselected(tab: TabLayout.Tab?) {
-        TODO("Not yet implemented")
+        val item = tab?.tag as SourcesItem
+        getNews(item.id)
     }
     private fun getNews(sourceId: String?) {
+        adapter.changeData(null)
+        binding.progressPar.visibility=View.VISIBLE
+
         ApiManager.getApi()
-            .getNews(Constants.apiKey,"en","")
+            .getNews(Constants.apiKey,"en",sourceId?:"")
             .enqueue(object :Callback<NewsResponse>{
                 override fun onResponse(
                     call: Call<NewsResponse>,
                     response: Response<NewsResponse>
                 ) {
+                    binding.progressPar.visibility=View.GONE
                     if (response.isSuccessful){
                         showNewsInRecycleView(response.body()?.articles)
                     }
@@ -103,6 +109,7 @@ class HomePage :BaseActivity(),TabLayout.OnTabSelectedListener {
                 }
 
                 override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                    binding.progressPar.visibility=View.GONE
                     showDialoge(message =t.localizedMessage, posActionName =getString(R.string.retry) ,
                         posAction =DialogInterface.OnClickListener{dialog, which ->
                             call.clone().enqueue(this)
