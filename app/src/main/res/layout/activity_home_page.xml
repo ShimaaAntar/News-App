@@ -16,6 +16,7 @@
         app:tabTextColor="@color/colorPrimaryDark"
         app:tabSelectedTextColor="@color/colorAccent"
         />
+
     <ProgressBar
         android:id="@+id/progressPar"
         android:layout_width="wrap_content"
