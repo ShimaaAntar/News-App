@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.newsapplication.api.model.ArticlesItem
 
 class NewsAdapter(var newsList:List<ArticlesItem?>?):
@@ -30,7 +31,9 @@ class NewsAdapter(var newsList:List<ArticlesItem?>?):
         holder.date.setText(newsItem?.publishedAt)
         holder.title.setText(newsItem?.title)
         holder.desc.setText(newsItem?.description)
-
+        Glide.with(holder.itemView)
+            .load(newsItem?.urlToImage)
+            .into(holder.image)
     }
     fun changeData(newsList: List<ArticlesItem?>?){
         this.newsList=newsList
