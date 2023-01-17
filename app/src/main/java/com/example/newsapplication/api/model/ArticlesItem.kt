@@ -27,4 +27,4 @@ import com.google.gson.annotations.SerializedName
 
 	@field:SerializedName("content")
 	val content: String? = null
-)
+):java.io.Serializable
