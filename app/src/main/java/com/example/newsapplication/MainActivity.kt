@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 
 class MainActivity : AppCompatActivity() {
-    // 642fdbdc304a40288af681d6c221672b
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

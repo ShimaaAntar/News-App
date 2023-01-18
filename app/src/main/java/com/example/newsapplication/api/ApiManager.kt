@@ -20,6 +20,7 @@ class ApiManager {
                 val client= OkHttpClient.Builder().addInterceptor(interceptor).build()
 
                 retrofit =Retrofit.Builder()
+                    .client(client)
                     .baseUrl("https://newsapi.org/v2/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
