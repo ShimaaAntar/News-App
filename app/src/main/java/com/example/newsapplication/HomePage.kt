@@ -1,6 +1,7 @@
 package com.example.newsapplication
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.islami.Base.BaseActivity
@@ -72,24 +73,64 @@ class HomePage :BaseActivity(),TabLayout.OnTabSelectedListener {
         binding.tabLayout.addOnTabSelectedListener(this)
         binding.tabLayout.getTabAt(0)?.select()
     }
+    fun search(sourceId:String?){
+        binding.butSearch.setOnClickListener{
+            val text=binding.search.text.toString()
+            adapter.changeData(null)
+            binding.progressPar.visibility=View.VISIBLE
+
+            ApiManager.getApi()
+                .getNews(Constants.apiKey,"en",sourceId?:"",text)
+                .enqueue(object :Callback<NewsResponse>{
+                    override fun onResponse(
+                        call: Call<NewsResponse>,
+                        response: Response<NewsResponse>
+                    ) {
+                        binding.progressPar.visibility=View.GONE
+                        if (response.isSuccessful){
+                            showNewsInRecycleView(response.body()?.articles)
+                        }
+                        else{
+                            showDialoge(message = response.body()?.message?:"",
+                                posActionName = getString(R.string.ok),
+                                posAction =DialogInterface.OnClickListener{dialog, which ->
+                                    dialog.dismiss()
+                                })
+                        }
+                    }
+
+                    override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                        binding.progressPar.visibility=View.GONE
+                        showDialoge(message =t.localizedMessage, posActionName =getString(R.string.retry) ,
+                            posAction =DialogInterface.OnClickListener{dialog, which ->
+                                call.clone().enqueue(this)
+                                dialog.dismiss()
+                            } )
+                    }
+
+                })
+
+        }
+    }
     override fun onTabSelected(tab: TabLayout.Tab?) {
         val item = tab?.tag as SourcesItem
         getNews(item.id)
+        search(item.id)
+
     }
     override fun onTabUnselected(tab: TabLayout.Tab?) {
-
     }
-
     override fun onTabReselected(tab: TabLayout.Tab?) {
         val item = tab?.tag as SourcesItem
         getNews(item.id)
+        search(item.id)
     }
     private fun getNews(sourceId: String?) {
         adapter.changeData(null)
         binding.progressPar.visibility=View.VISIBLE
 
         ApiManager.getApi()
-            .getNews(Constants.apiKey,"en",sourceId?:"")
+            .getNews(Constants.apiKey,"en",sourceId?:"","")
             .enqueue(object :Callback<NewsResponse>{
                 override fun onResponse(
                     call: Call<NewsResponse>,
@@ -122,5 +163,14 @@ class HomePage :BaseActivity(),TabLayout.OnTabSelectedListener {
 
     private fun showNewsInRecycleView(newsList: List<ArticlesItem?>?) {
         adapter.changeData(newsList)
+        adapter.onItemClickListener=object :NewsAdapter.OnItemClickListener{
+            override fun onItemClick(position: Int, newsItem: ArticlesItem?) {
+                val intent = Intent(this@HomePage, NewsDetailsActivity::class.java)
+                intent.putExtra(Constants.ITEM, newsItem)
+                startActivity(intent)
+
+            }
+
+        }
     }
 }

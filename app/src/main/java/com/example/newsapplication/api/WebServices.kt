@@ -14,7 +14,8 @@ interface WebServices {
                        @Query("country") country:String):Call<SourcesResponse>
     @GET("everything")
     fun getNews(@Query("apiKey") key:String,
-                       @Query("language") language:String,
-                @Query("sources") sources:String):Call<NewsResponse>
+                @Query("language") language:String,
+                @Query("sources") sources:String,
+                @Query("q") search:String):Call<NewsResponse>
 
 }

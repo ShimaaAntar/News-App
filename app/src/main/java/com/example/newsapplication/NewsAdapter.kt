@@ -27,14 +27,23 @@ class NewsAdapter(var newsList:List<ArticlesItem?>?):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val newsItem =newsList?.get(position)
+        val newsItem = newsList?.get(position)
         holder.date.setText(newsItem?.publishedAt)
         holder.title.setText(newsItem?.title)
         holder.desc.setText(newsItem?.description)
         Glide.with(holder.itemView)
             .load(newsItem?.urlToImage)
             .into(holder.image)
+        if (onItemClickListener != null)
+            holder.itemView.setOnClickListener {
+                onItemClickListener?.onItemClick(position, newsItem)
+            }
     }
+    var onItemClickListener:OnItemClickListener?=null
+    interface OnItemClickListener{
+        fun onItemClick(position: Int,newsItem: ArticlesItem?)
+    }
+
     fun changeData(newsList: List<ArticlesItem?>?){
         this.newsList=newsList
         notifyDataSetChanged()
